@@ -4,3 +4,9 @@ cd ..
 set FLASK_APP=backend.app:create_app
 set FLASK_ENV=development
 flask run
+
+
+python -m backend.app
+
+
+http://localhost:5000/api/status
