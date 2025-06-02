@@ -4,6 +4,10 @@ from selenium.webdriver.chrome.options import Options
 import time
 import re
 
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+
 class Product:
     def __init__(self, title, price, url, snippet='', image=None):
         self.title = title
@@ -28,7 +32,8 @@ class GoogleScraper:
         options.add_argument("--disable-gpu")
         options.add_argument("--no-sandbox")
         options.add_argument("--log-level=3")
-        self.driver = webdriver.Chrome(options=options)
+        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+
 
     def search_google(self, query: str, site: str, start=0, engine="google", aggressive=True) -> BeautifulSoup:
         if aggressive:
@@ -130,6 +135,7 @@ class GoogleScraper:
 
     def close(self):
         self.driver.quit()
+        
 
 def get_google_results(query, site, engine="google", aggressive=True):
     scraper = GoogleScraper()
