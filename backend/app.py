@@ -3,6 +3,7 @@ from flask_cors import CORS
 from backend.extensions import db, migrate
 from backend.rutas.usuarios import usuarios_bp
 from backend.config import Config
+from backend.rutas.search import search_bp
 
 
 def create_app():
@@ -14,10 +15,10 @@ def create_app():
     migrate.init_app(app, db)
 
     app.register_blueprint(usuarios_bp)
+    app.register_blueprint(search_bp, url_prefix="/api") 
 
     for rule in app.url_map.iter_rules():
         print(f"[RUTA REGISTRADA] {rule}")
-
 
     return app
 
