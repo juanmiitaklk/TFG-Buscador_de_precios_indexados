@@ -8,7 +8,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from backend.modelos.product import Product
 from backend.utils.logger import get_logger
 
-logger = get_logger("scraper")
+logger = get_logger("google")
 
 class GoogleScraper:
     def __init__(self):
