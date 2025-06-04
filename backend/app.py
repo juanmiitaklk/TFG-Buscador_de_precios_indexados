@@ -4,7 +4,6 @@ from backend.extensions import db, migrate
 from backend.rutas.usuarios import usuarios_bp
 from backend.config import Config
 from backend.rutas.search import search_bp
-from backend.rutas.selenium_utils import utils_bp
 
 
 
@@ -18,7 +17,6 @@ def create_app():
 
     app.register_blueprint(usuarios_bp)
     app.register_blueprint(search_bp, url_prefix="/api") 
-    app.register_blueprint(utils_bp)
 
 
     for rule in app.url_map.iter_rules():

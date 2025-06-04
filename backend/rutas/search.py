@@ -1,7 +1,9 @@
 from flask import Blueprint, request, jsonify
 from backend.utils.scraper import get_google_results
+import logging
 
 search_bp = Blueprint('search', __name__)
+logger = logging.getLogger(__name__)
 
 @search_bp.route('/search', methods=['POST'])
 def buscar():
@@ -10,19 +12,35 @@ def buscar():
     sites = data.get("sites", [])
     min_price = data.get("minPrice")
     max_price = data.get("maxPrice")
-    engine = data.get("engine", "google")  # Por defecto: Google
+    engine = data.get("engine", "google")
 
     if not query or not sites:
         return jsonify({"error": "Missing query or sites"}), 400
 
-    resultados = []
-    for site in sites:
-        resultado = get_google_results(query, site, engine=engine)
-        if isinstance(resultado, dict) and resultado.get("error") == "captcha":
-            return jsonify({"error": "captcha"}), 200
-        resultados += resultado
+    try:
+        if min_price is not None:
+            min_price = float(min_price)
+        if max_price is not None:
+            max_price = float(max_price)
+    except ValueError:
+        return jsonify({"error": "Invalid price filter format"}), 400
 
-    # Filtro por precio si viene definido
+    resultados = []
+    seen_urls = set()
+
+    for site in sites:
+        try:
+            resultado = get_google_results(query, site, engine=engine)
+            if isinstance(resultado, dict) and resultado.get("error") == "captcha":
+                return jsonify({"error": "captcha"}), 200
+            for r in resultado:
+                if r["url"] not in seen_urls:
+                    seen_urls.add(r["url"])
+                    resultados.append(r)
+        except Exception as e:
+            logger.error(f"[❌ Error] {site}: {str(e)}")
+            continue
+
     if min_price is not None or max_price is not None:
         def filtrar_por_precio(item):
             precio_raw = item.get("price")

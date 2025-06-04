@@ -3,27 +3,12 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import time
 import re
-
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+from backend.modelos.product import Product
+from backend.utils.logger import get_logger
 
-
-class Product:
-    def __init__(self, title, price, url, snippet='', image=None):
-        self.title = title
-        self.price = price
-        self.url = url
-        self.snippet = snippet
-        self.image = image
-
-    def to_dict(self):
-        return {
-            "title": self.title,
-            "price": self.price,
-            "url": self.url,
-            "snippet": self.snippet,
-            "image": self.image,
-        }
+logger = get_logger("scraper")
 
 class GoogleScraper:
     def __init__(self):
@@ -32,52 +17,44 @@ class GoogleScraper:
         options.add_argument("--disable-gpu")
         options.add_argument("--no-sandbox")
         options.add_argument("--log-level=3")
+        options.add_argument(
+            "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36"
+        )
         self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
-
-    def search_google(self, query: str, site: str, start=0, engine="google", aggressive=True) -> BeautifulSoup:
-        if aggressive:
-            hacking_query = f'site:{site} intext:"{query}" ("€" | "EUR")'
+    def build_query(self, query, site, mode="aggressive"):
+        base_query = f'site:{site} "{query}"'
+        if mode == "title":
+            return f'site:{site} intitle:"{query}"'
+        elif mode == "aggressive":
+            return f'{base_query} (EUR OR € OR precio)'
         else:
-            hacking_query = f'site:{site} "{query}"'
+            return base_query
+
+    def search_google(self, query: str, site: str, start=0, engine="google", mode="aggressive") -> BeautifulSoup:
+        hacking_query = self.build_query(query, site, mode)
 
         if engine == "bing":
-            url = "https://www.bing.com/search?q=" + hacking_query
+            url = f"https://www.bing.com/search?q={hacking_query}"
+        elif engine == "duckduckgo":
+            url = f"https://html.duckduckgo.com/html/?q={hacking_query}"
         else:
-            url = "https://www.google.com/search?q=" + hacking_query + f"&start={start}"
+            url = f"https://www.google.com/search?q={hacking_query}&start={start}"
 
-        print(f"[🔁 Página {int(start / 10) + 1}]")
-        print(f"[🔎 SENTENCIA] {hacking_query}")
+        logger.info(f"[Página {int(start / 10) + 1}] {hacking_query}")
 
         self.driver.get(url)
-        time.sleep(2)
+        time.sleep(3)
 
-        # Aceptar cookies en Google
-        if engine == "google":
-            try:
-                accept_btn = self.driver.find_element("xpath", "//button//div[contains(text(), 'Aceptar todo')]")
-                accept_btn.click()
-                print("[✅ Google - Cookies aceptadas]")
-                time.sleep(1)
-            except:
-                print("[ℹ️ Google - Sin modal de cookies o ya aceptado]")
-
-        # Aceptar cookies en Bing
-        if engine == "bing":
-            try:
-                accept_btn = self.driver.find_element("xpath", "//button[contains(., 'Aceptar')]")
-                accept_btn.click()
-                print("[✅ Bing - Cookies aceptadas]")
-                time.sleep(1)
-            except:
-                print("[ℹ️ Bing - Sin modal de cookies o ya aceptado]")
-
-        filename = f"screenshot_{engine}_{site.replace('.', '_')}_{start}.png"
-        self.driver.save_screenshot(filename)
-        print(f"[📸 Captura guardada] {filename}")
+        try:
+            accept_btn = self.driver.find_element("xpath", "//button[contains(text(), 'Aceptar') or contains(text(), 'Accept')]")
+            accept_btn.click()
+            logger.info("[Cookies aceptadas]")
+            time.sleep(1)
+        except:
+            logger.info("[Sin modal de cookies o ya aceptado]")
 
         html = self.driver.page_source
-        print(f"[💡 HTML Length] {len(html)}")
 
         if "detected unusual traffic" in html.lower() or "solve the captcha" in html.lower():
             raise Exception("CaptchaDetected")
@@ -94,6 +71,8 @@ class GoogleScraper:
 
         if engine == "bing":
             result_blocks = soup.select('li.b_algo')
+        elif engine == "duckduckgo":
+            result_blocks = soup.select('div.result')
         else:
             result_blocks = soup.select('div.g, div.tF2Cxc, div.MjjYud')
 
@@ -110,7 +89,7 @@ class GoogleScraper:
                 continue
             seen.add(url)
 
-            title_tag = res.find('h2') if engine == "bing" else res.find('h3')
+            title_tag = res.find('h2') if engine in ["bing", "duckduckgo"] else res.find('h3')
             title = title_tag.get_text(strip=True) if title_tag else 'Sin título'
 
             desc = res.get_text(" ", strip=True)
@@ -122,27 +101,38 @@ class GoogleScraper:
             product = Product(title=title, price=price, url=url, snippet=desc[:250], image=image)
             results.append(product)
 
-        print(f"[✅ Resultados encontrados] {len(results)}")
+        logger.info(f"[Resultados encontrados] {len(results)}")
         return results
 
-    def get_results(self, query: str, site: str, pages=3, engine="google", aggressive=True):
+    def get_results(self, query: str, site: str, pages=3, engine="google", mode="aggressive"):
         results = []
         for i in range(pages):
-            soup = self.search_google(query, site, start=i * 10, engine=engine, aggressive=aggressive)
-            results += self.extract_results(soup, engine=engine)
+            try:
+                soup = self.search_google(query, site, start=i * 10, engine=engine, mode=mode)
+                new_results = self.extract_results(soup, engine=engine)
+                results += new_results
+
+                if engine == "duckduckgo" and not new_results:
+                    logger.warning("[DuckDuckGo vacío] Probando con Google como respaldo")
+                    soup = self.search_google(query, site, start=i * 10, engine="google", mode=mode)
+                    results += self.extract_results(soup, engine="google")
+
+            except Exception as e:
+                logger.error(f"[Error en página {i + 1}] {str(e)}")
             time.sleep(1)
         return results
 
     def close(self):
         self.driver.quit()
-        
 
-def get_google_results(query, site, engine="google", aggressive=True):
+
+def get_google_results(query, site, engine="google", mode="aggressive"):
     scraper = GoogleScraper()
     try:
-        products = scraper.get_results(query, site, pages=3, engine=engine, aggressive=aggressive)
+        products = scraper.get_results(query, site, pages=3, engine=engine, mode=mode)
         return [p.to_dict() for p in products]
     except Exception as e:
+        logger.error(f"Error en el scraper: {e}")
         if "CaptchaDetected" in str(e):
             return {"error": "captcha"}
         raise
