@@ -8,10 +8,12 @@ from webdriver_manager.chrome import ChromeDriverManager
 from backend.modelos.product import Product
 from backend.utils.logger import get_logger
 
+# Logger para seguimiento
 logger = get_logger("google")
 
 class GoogleScraper:
     def __init__(self):
+         #Configura el navegador
         options = Options()
         options.add_argument("--headless")
         options.add_argument("--disable-gpu")
@@ -23,6 +25,7 @@ class GoogleScraper:
         self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
     def build_query(self, query, site, mode="aggressive"):
+        # Construye la consulta con filtros
         base_query = f'site:{site} "{query}"'
         if mode == "title":
             return f'site:{site} intitle:"{query}"'
@@ -32,6 +35,7 @@ class GoogleScraper:
             return base_query
 
     def search_google(self, query: str, site: str, start=0, engine="google", mode="aggressive") -> BeautifulSoup:
+        # Realiza la busqueda y devuelve el html parseadp con las plantillas (cards)
         hacking_query = self.build_query(query, site, mode)
 
         if engine == "bing":
@@ -46,6 +50,7 @@ class GoogleScraper:
         self.driver.get(url)
         time.sleep(3)
 
+        # Acepta cookies si aparece el modal
         try:
             accept_btn = self.driver.find_element("xpath", "//button[contains(text(), 'Aceptar') or contains(text(), 'Accept')]")
             accept_btn.click()
@@ -56,16 +61,19 @@ class GoogleScraper:
 
         html = self.driver.page_source
 
+        # Detecta si hay captcha 
         if "detected unusual traffic" in html.lower() or "solve the captcha" in html.lower():
             raise Exception("CaptchaDetected")
 
         return BeautifulSoup(html, 'html.parser')
 
     def extract_price(self, text: str) -> str:
+    # Extrae precio en formato € desde un texto
         match = re.search(r'(\d{1,3}(?:[\.,]\d{3})*[\.,]?\d{2}) ?€', text)
         return f"{match.group(1)} €" if match else "Precio no disponible"
 
     def extract_results(self, soup: BeautifulSoup, engine="google") -> list:
+        # Extrae resultados desde el HTML
         seen = set()
         results = []
 
@@ -105,6 +113,7 @@ class GoogleScraper:
         return results
 
     def get_results(self, query: str, site: str, pages=3, engine="google", mode="aggressive"):
+        # Busca en varias paginas y acumula resultados
         results = []
         for i in range(pages):
             try:
@@ -112,6 +121,7 @@ class GoogleScraper:
                 new_results = self.extract_results(soup, engine=engine)
                 results += new_results
 
+                # Fallback a Google si DuckDuckGo no da resultados
                 if engine == "duckduckgo" and not new_results:
                     logger.warning("[DuckDuckGo vacío] Probando con Google como respaldo")
                     soup = self.search_google(query, site, start=i * 10, engine="google", mode=mode)
@@ -123,10 +133,13 @@ class GoogleScraper:
         return results
 
     def close(self):
+                # Cierra el navegador
         self.driver.quit()
 
 
 def get_google_results(query, site, engine="google", mode="aggressive"):
+        # Función externa para obtener resultados como diccionarios
+
     scraper = GoogleScraper()
     try:
         products = scraper.get_results(query, site, pages=3, engine=engine, mode=mode)

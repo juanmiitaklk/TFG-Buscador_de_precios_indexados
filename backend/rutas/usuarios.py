@@ -1,10 +1,12 @@
 from flask import Blueprint, request, jsonify
 from backend.modelos.models import db, Usuario
 
+# Blueprint
 usuarios_bp = Blueprint('usuarios', __name__, url_prefix='/api')
 
 @usuarios_bp.route('/registro', methods=['POST'])
 def registrar_usuario():
+    # Registra un nuevo usuario
     data = request.get_json()
     nombre = data.get('nombre')
     email = data.get('email')
@@ -24,11 +26,13 @@ def registrar_usuario():
 
 @usuarios_bp.route('/usuarios', methods=['GET'])
 def obtener_usuarios():
+    # Lista todos los usuarios
     usuarios = Usuario.query.all()
     return jsonify([usuario.to_dict() for usuario in usuarios])
 
 @usuarios_bp.route('/login', methods=['POST'])
 def login():
+    # Devuelve usuario por email sin validar la contraseña
     data = request.get_json()
     email = data.get('email')
 
@@ -43,6 +47,7 @@ def login():
 
 @usuarios_bp.route('/usuarios/<int:id>', methods=['PUT'])
 def actualizar_usuario(id):
+    # Actualiza los datos de un usuario
     data = request.get_json()
     usuario = Usuario.query.get_or_404(id)
 
@@ -55,6 +60,7 @@ def actualizar_usuario(id):
 
 @usuarios_bp.route('/usuarios/<int:id>', methods=['DELETE'])
 def eliminar_usuario(id):
+    # Elimina un usuario por ID
     usuario = Usuario.query.get_or_404(id)
     db.session.delete(usuario)
     db.session.commit()
