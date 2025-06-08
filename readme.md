@@ -63,7 +63,9 @@ Persistencia de productos	✘
 Autenticación avanzada (JWT)	✘
 
 ---
-## 📦 Licencia
-Este proyecto ha sido desarrollado como parte de un Trabajo de Fin de Grado con fines educativos y no comerciales.
-© Juan Manuel González Díaz, 2025. Todos los derechos reservados.
+## 📄 Licencia
+
+Este proyecto está licenciado bajo los términos de la **MIT License**.  
+Consulta el archivo [LICENSE](./LICENSE) para más detalles.
+
 ---
