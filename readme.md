@@ -1,51 +1,69 @@
-# 🛒 Buscador de Precios Indexados
+# 🛒 IndexPrice
 
-Este proyecto es un TFG que consiste en una aplicación web que permite **buscar productos en varias tiendas online** y comparar sus precios de forma centralizada. Utiliza técnicas de scraping, procesamiento dinámico y filtros personalizados para mostrar resultados útiles al usuario.
+Este proyecto forma parte de un Trabajo de Fin de Grado (TFG) y consiste en una aplicación web fullstack que permite **buscar productos en múltiples tiendas online y comparar precios** desde una única interfaz. Utiliza técnicas de scraping, filtros dinámicos y motores de búsqueda personalizados.
 
-## 📌 Funcionalidades
+---
 
-- 🔍 Búsqueda de productos por palabra clave.
-- 🛍️ Selección de múltiples tiendas (checkboxes personalizados).
-- 📉 Filtros por precio mínimo y máximo.
-- ⚙️ Elección de motor de búsqueda (Google, Bing, DuckDuckGo).
-- 🖼️ Resultados con título, descripción, precio e imagen.
-- ✅ Sistema de usuarios: registro, login, edición y eliminación.
-- ⏳ Loader animado mientras se realiza la búsqueda.
-- ⚠️ Detección automática de CAPTCHA y aviso al usuario.
-- 🌙 Diseño adaptado a fondo oscuro con estética moderna.
+## 🚀 Funcionalidades principales
 
-## 🧱 Estructura del proyecto
+- 🔍 **Búsqueda de productos** por nombre clave.
+- 🛍️ **Selección de tiendas** mediante checkboxes.
+- 📉 **Filtrado de precios** por rango mínimo y máximo.
+- ⚙️ **Elección de motor de búsqueda:** Google, Bing o DuckDuckGo.
+- 🖼️ Resultados enriquecidos con **título, imagen, descripción y precio**.
+- 👤 **Gestión de usuarios**: registro, inicio de sesión, edición y eliminación.
+- ⏳ **Animación de carga personalizada** mientras se realiza la búsqueda.
+- 🌙 **Diseño responsive y oscuro**, enfocado en usabilidad moderna.
 
-📦 TFG/
-├── backend/
-│   ├── app.py                # Punto de entrada del servidor Flask
-│   ├── config.py             # Configuración principal (SQLite, claves, etc.)
-│   ├── extensions.py         # Inicialización de SQLAlchemy y migraciones
-│   ├── requirements.txt      # Dependencias Python
-│   ├── modelos/              # Modelos de base de datos (Usuario, Producto)
-│   ├── rutas/                # Rutas API REST (login, registro, búsqueda)
-│   ├── utils/                # Scraper con Selenium y logger
-│   └── migrations/           # (opcional) Control de versiones para la DB
+---
+## ⚙️ Tecnologías utilizadas
 
-├── frontend/
-│   ├── public/               # Imágenes, favicon, fondos
-│   ├── src/
-│   │   ├── assets/           # Recursos estáticos (si los hubiera)
-│   │   ├── components/       # Componentes como Header, Filtros, etc.
-│   │   ├── layouts/          # Layouts compartidos (p.ej. base HTML)
-│   │   ├── pages/            # Páginas Astro (index, login, register, ayuda)
-│   │   └── styles/           # Estilos globales y personalizados
-│   ├── astro.config.mjs      # Configuración Astro
-│   ├── tailwind.config.js    # Configuración TailwindCSS
-│   └── package.json          # Dependencias y scripts del frontend
+- **Backend:** Flask, SQLAlchemy, SQLite
+- **Frontend:** Astro, TailwindCSS, JavaScript
+- **Scraping:** Selenium + BeautifulSoup
+- **Base de datos:** SQLite 3
+- **Extras:** WebDriver Manager, dotenv, logging personalizado
 
-├── instance/
-│   └── db.sqlite3            # Base de datos local SQLite
+---
 
-├── logs/
-│   ├── scraper.log           # Log del scraper
-│   ├── ReiniciarIP.txt       # Registro/manual sobre IPs
-│   └── run_backend.txt       # Script o instrucciones de backend
+## 📝 Instalación local
 
-├── .gitignore
-└── README.md
+### Backend (Python 3.11+)
+
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # En Windows: venv\\Scripts\\activate
+pip install -r requirements.txt
+python app.py
+```
+
+### Frontend (Node.js 18+)
+```cd frontend
+npm install
+npm run dev
+```
+
+#### Accede en http://localhost:3000/
+
+
+## 🔐 Usuarios y acceso
+El sistema permite registrar nuevos usuarios, iniciar sesión, modificar o eliminar su perfil.
+
+### Nota: las contraseñas deben cifrarse en producción (actualmente se almacenan en texto plano por simplicidad de pruebas).
+
+
+## ✅ Estado del proyecto
+Característica	Estado
+Proyecto funcional	✔
+Búsqueda en múltiples tiendas	✔
+Scraping operativo	✔
+Interfaz moderna y usable	✔
+Persistencia de productos	✘
+Autenticación avanzada (JWT)	✘
+
+---
+## 📦 Licencia
+Este proyecto ha sido desarrollado como parte de un Trabajo de Fin de Grado con fines educativos y no comerciales.
+© Juan Manuel González Díaz, 2025. Todos los derechos reservados.
+---
