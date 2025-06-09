@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from backend.extensions import db, migrate
 from backend.rutas.usuarios import usuarios_bp
 from backend.rutas.search import search_bp
@@ -8,6 +9,8 @@ def create_app():
     # Crea e inicializa la app Flask
     app = Flask(__name__)
     app.config.from_object(Config)
+    CORS(app)
+
 
     db.init_app(app)       # base de datos
     migrate.init_app(app, db)  #  migraciones
