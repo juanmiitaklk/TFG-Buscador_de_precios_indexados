@@ -1,2 +1,12 @@
-cd frontend
-npm run dev
+INICIAR PRIMERA VEZ:
+1.        cd frontend
+
+2.        npm install
+
+3.        npm run dev
+
+
+INICIAR POR SEGUNDA O MAS VECES:
+1.        cd frontend
+
+3.        npm run dev

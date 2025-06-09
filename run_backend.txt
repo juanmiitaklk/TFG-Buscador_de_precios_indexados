@@ -1,12 +1,29 @@
-cd backend
-venv\Scripts\activate
-cd ..
-set FLASK_APP=backend.app:create_app
-set FLASK_ENV=development
-flask run
+INICIAR PRIMERA VEZ:
+
+1.      cd backend
+
+2.      python -m venv venv
+
+3.      venv\\Scripts\\activate
+
+4.      pip install -r requirements.txt
+
+5.      cd ..
+
+6.      set FLASK_APP=backend.app:create_app
+
+7.      set FLASK_ENV=development
+
+8.      flask run
 
 
-python -m backend.app
 
+INICIAR POR SEGUNDA O MAS VECES:
 
-http://localhost:5000/api/status
+1.      cd backend
+
+2.      venv\\Scripts\\activate
+
+3.      cd ..
+
+4.      flask run

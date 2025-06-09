@@ -35,7 +35,10 @@ cd backend
 python -m venv venv
 source venv/bin/activate  # En Windows: venv\\Scripts\\activate
 pip install -r requirements.txt
-python app.py
+cd ..
+set FLASK_APP=backend.app:create_app
+set FLASK_ENV=development
+flask run
 ```
 
 ### Frontend (Node.js 18+)
@@ -44,7 +47,7 @@ npm install
 npm run dev
 ```
 
-#### Accede en http://localhost:3000/
+#### Accede en http://localhost:4321/
 
 
 ## 🔐 Usuarios y acceso
