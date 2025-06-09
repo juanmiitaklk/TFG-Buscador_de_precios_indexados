@@ -62,7 +62,6 @@ Interfaz moderna y usable	✔
 Persistencia de productos	✘
 Autenticación avanzada (JWT)	✘
 
----
 ## 📄 Licencia
 
 Este proyecto está licenciado bajo los términos de la **MIT License**.  
