@@ -1,0 +1,220 @@
+---
+import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Filtros from "../components/Filtros.astro";
+---
+
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Buscador de Precios</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.png" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+    />
+  </head>
+
+  <body class="font-roboto">
+    <div class="background-grid relative min-h-screen">
+      <Header />
+
+      <!-- LOADER PANTALLA -->
+      <div
+        id="loader"
+        class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-md justify-center items-center transition-all duration-300 opacity-0 scale-95"
+      >
+        <div class="card2 animate-fade-in text-center">
+          <div class="loader text-3xl flex items-center justify-center gap-2">
+            <span>Buscando</span>
+            <div class="words">
+              <div class="words-inner">
+                <span>links...</span>
+                <span>imágenes...</span>
+                <span>tiendas...</span>
+                <span>precios...</span>
+                <span>productos...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FILTROS -->
+      <main class="flex flex-col md:flex-row gap-4 p-4 max-w-7xl mx-auto">
+        <Filtros />
+        <div
+          id="results"
+          class="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+        </div>
+      </main>
+
+      <script type="module">
+        const form = document.getElementById("search-form");
+        const loader = document.getElementById("loader");
+        const container = document.getElementById("results");
+
+        // Logica principal de busqueda
+        async function buscarProductos(aggressive = true) {
+          const query = document.getElementById("query").value.trim();
+          const sites = Array.from(
+            document.querySelectorAll("input[type=checkbox]:checked")
+          ).map((cb) => cb.value);
+
+          const minPrice =
+            parseFloat(document.getElementById("minPrice").value) || null;
+          const maxPrice =
+            parseFloat(document.getElementById("maxPrice").value) || null;
+
+          const engine = document.getElementById("engine").value;
+
+          if (!query) {
+            alert("Escribe un producto para buscar.");
+            return;
+          }
+          if (sites.length === 0) {
+            alert("Selecciona al menos una tienda.");
+            return;
+          }
+
+          const payload = { query, sites, minPrice, maxPrice, engine };
+
+          // Mostrar loader
+
+          loader.classList.remove("hidden");
+          requestAnimationFrame(() => {
+            loader.classList.add("flex");
+            loader.classList.remove("opacity-0", "scale-95");
+            loader.classList.add("opacity-100", "scale-100");
+          });
+
+          container.innerHTML = "";
+
+          try {
+            const res = await fetch("http://localhost:5000/api/search", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+
+            const data = await res.json();
+
+            // Ocultar loader
+            loader.classList.add("opacity-0", "scale-95");
+            loader.classList.remove("opacity-100", "scale-100");
+            setTimeout(() => {
+              loader.classList.remove("flex");
+              loader.classList.add("hidden");
+            }, 300);
+
+            container.innerHTML = "";
+
+            if (data.error === "captcha") {
+              container.innerHTML = `
+                <div class="flex flex-col items-center justify-center mt-16 text-center">
+                  <p class="text-red-600 text-xl font-bold mb-4">
+                    ⚠️ El scraper ha sido bloqueado por Google (CAPTCHA).
+                  </p>
+                  <button id="retryButton" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded">
+                    Reintentar búsqueda en modo seguro
+                  </button>
+                </div>
+              `;
+              document
+                .getElementById("retryButton")
+                .addEventListener("click", () => {
+                  buscarProductos(false);
+                });
+              return;
+            }
+
+            if (data.length === 0) {
+              container.innerHTML =
+                "<p class='NR text-center mt-8 text-gray-500'>No se encontraron resultados.</p>";
+              return;
+            }
+
+            // Mostrar resultados
+            data.forEach((item) => {
+              const card = document.createElement("div");
+              card.className = "bg-white rounded shadow p-4 flex flex-col";
+              card.innerHTML = `
+                <h2 class="text-md font-bold mb-2">
+                  <a href="${item.url}" target="_blank" class="text-indigo-700 hover:underline">
+                    ${item.title || "Sin título"}
+                  </a>
+                </h2>
+                <p class="text-sm mb-1">${item.snippet || "Sin descripción"}</p>
+                <p class="${
+                  item.price && item.price !== "Precio no disponible"
+                    ? "text-orange-600 font-semibold"
+                    : "text-gray-400 italic"
+                }">
+                  ${
+                    item.price && item.price !== "Precio no disponible"
+                      ? "Desde " + item.price
+                      : "Precio no disponible"
+                  }
+                </p>
+                ${
+                  item.image
+                    ? `<img src="${item.image}" alt="${item.title}" class="mt-2 max-w-full h-auto object-contain" />`
+                    : ""
+                }
+              `;
+              container.appendChild(card);
+            });
+          } catch (err) {
+            loader.classList.add("opacity-0", "scale-95");
+            loader.classList.remove("opacity-100", "scale-100");
+            setTimeout(() => {
+              loader.classList.remove("flex");
+              loader.classList.add("hidden");
+            }, 300);
+            container.innerHTML = `
+              <div class="text-center mt-16 text-red-500 font-bold">
+                ❌ Error de conexión con el servidor.
+              </div>
+            `;
+          }
+        }
+
+        // Evento de búsqueda
+        form?.addEventListener("submit", (e) => {
+          e.preventDefault();
+          buscarProductos(true);
+        });
+
+        // Mostrar filtros
+        const toggleBtn = document.getElementById("toggleFilters");
+        const filtersPanel = document.getElementById("filtersPanel");
+
+        toggleBtn?.addEventListener("click", () => {
+          filtersPanel.classList.toggle("hidden");
+        });
+
+        // Cargar usuario
+        const userJSON = localStorage.getItem("user");
+
+        if (userJSON) {
+          const user = JSON.parse(userJSON);
+          const info = document.getElementById("user-info");
+          if (info) {
+            info.textContent = `Hola, ${user.nombre}`;
+          }
+        } else {
+          window.location.href = "/login";
+        }
+
+        // Logout
+
+        window.logout = function () {
+          localStorage.removeItem("user");
+          window.location.href = "/login";
+        };
+      </script>
+    </div>
+  </body>
+</html>

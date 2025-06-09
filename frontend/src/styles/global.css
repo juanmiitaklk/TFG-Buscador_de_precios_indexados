@@ -1,0 +1,247 @@
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+
+
+/* ------------------------- CHECKBOX TIENDA  */
+.checkbox {
+  --input-focus: #2d8cf0;
+  --input-out-of-focus: #ccc;
+  --bg-color: #fff;
+  --bg-color-alt: #666;
+  --main-color: #323232;
+
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--main-color);
+  border-radius: 4px;
+  background-color: var(--input-out-of-focus);
+  box-shadow: 2px 2px var(--main-color);
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.checkbox:checked {
+  background-color: var(--input-focus);
+}
+
+.checkbox:checked::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 6px;
+  width: 5px;
+  height: 10px;
+  border: solid var(--bg-color);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* ------------------------- CHECKBOX TIENDA  */
+/* ------------------------- LOADER  */
+
+.card2 {
+  --bg-color: #111;
+  background-color: var(--bg-color);
+  padding: 1rem 2rem;
+  border-radius: 1.25rem;
+}
+
+.loader {
+  color: rgb(220, 220, 220);
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 28px;
+}
+
+.words {
+  height: 1em;
+  overflow: hidden;
+  position: relative;
+  width: 160px;
+  display: inline-block;
+}
+
+.words-inner {
+  display: flex;
+  flex-direction: column;
+  animation: scrollWords 10s linear infinite;
+}
+
+.words-inner span {
+  height: 1em;
+  line-height: 1em;
+  text-align: left;
+  color: #fdff7d;
+}
+
+/* Animación vertical */
+@keyframes scrollWords {
+  0%, 10%   { transform: translateY(0); }
+  20%, 30%  { transform: translateY(-1em); }
+  40%, 50%  { transform: translateY(-2em); }
+  60%, 70%  { transform: translateY(-3em); }
+  80%, 90%  { transform: translateY(-4em); }
+  100%      { transform: translateY(0); }
+}
+
+/* ------------------------- LOADER  */
+/* ------------------------- HTML CARD  */
+
+card {
+  max-width: 250px;
+  width: 100%;
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  border: 1px solid #d9d9d9;
+}
+.card .header {
+  display: flex;
+  align-items: center;
+}
+.header .img {
+  height: 45px;
+  width: 45px;
+  background: #d9d9d9;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+}
+.header .details {
+  margin-left: 20px;
+}
+.details span {
+  display: block;
+  background: #d9d9d9;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+.details .name {
+  height: 12px;
+  width: 70px;
+}
+.details .about {
+  height: 13px;
+  width: 120px;
+  margin-top: 10px;
+}
+.card .description {
+  margin: 25px 0;
+}
+.description .line {
+  background: #d9d9d9;
+  border-radius: 10px;
+  height: 11px;
+  margin: 10px 0;
+  overflow: hidden;
+  position: relative;
+}
+.description .line-1 {
+  width: calc(100% - 15%);
+}
+.description .line-3 {
+  width: calc(100% - 40%);
+}
+.card .btns {
+  display: flex;
+}
+.card .btns .btn {
+  height: 25px;
+  width: 100%;
+  background: #d9d9d9;
+  border-radius: 25px;
+  position: relative;
+  overflow: hidden;
+}
+.btns .btn-1 {
+  margin-right: 8px;
+}
+.btns .btn-2 {
+  margin-left: 8px;
+}
+.header .img::before,
+.details span::before,
+.description .line::before,
+.btns .btn::before {
+  position: absolute;
+  content: "";
+  height: 100%;
+  width: 100%;
+  background-image: linear-gradient(
+    to right,
+    #d9d9d9 0%,
+    rgba(0, 0, 0, 0.05) 20%,
+    #d9d9d9 40%,
+    #d9d9d9 100%
+  );
+  background-repeat: no-repeat;
+  background-size: 450px 400px;
+  animation: shimmer 1s linear infinite;
+}
+.header .img::before {
+  background-size: 650px 600px;
+}
+.details span::before {
+  animation-delay: 0.2s;
+}
+.btns .btn-2::before {
+  animation-delay: 0.22s;
+}
+@keyframes shimmer {
+  0% {
+    background-position: -450px 0;
+  }
+  100% {
+    background-position: 450px 0;
+  }
+}
+
+/* ------------------------- HTML CARD  */
+/* ------------------------- INDEX PAGE  */
+
+
+.background-grid {
+  background-image: url("/bg-oscuro.webp");
+  background-repeat: repeat;
+  background-size: auto;
+  background-attachment: fixed;
+  background-position: center;
+  min-height: 100vh;
+}
+
+.headerIndex{
+    background-color: #2C3E50 ;
+}
+
+.asideIndex{
+    background-image: url("/bg-claro.webp");
+}
+
+button .imgAyudaiNDEX {
+  width: 24px;       
+  height: 24px;
+  object-fit: contain; 
+  display: block;       
+}
+
+button.img-icon-btn {
+  width: 40px;
+  height: 40px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.NR{
+  color: #fdff7d;
+}
+/* ------------------------- INDEX PAGE  */

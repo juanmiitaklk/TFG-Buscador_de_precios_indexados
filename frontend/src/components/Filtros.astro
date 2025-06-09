@@ -1,0 +1,63 @@
+<aside
+  id="filtersPanel"
+  class="fixed top-0 left-0 w-4/5 sm:w-[320px] min-h-screen p-6 shadow-lg z-40 transform -translate-x-full transition-transform duration-300 bg-[#1f2029] md:relative md:translate-x-0 md:block"
+>
+  <div class="mb-4">
+    <label class="block text-sm font-medium mb-1 text-[#ffeba7]" for="engine">Motor de búsqueda</label>
+    <select id="engine" class="w-full border rounded px-2 py-1 text-sm bg-[#2a2b38] text-[#ffeba7] border-[#5e6681]">
+      <option value="google">Google</option>
+      <option value="bing">Bing</option>
+      <option value="duckduckgo">DuckDuckGo</option>
+
+    </select>
+  </div>
+
+  <h2 class="font-bold text-xl mb-4 text-[#ffeba7]">Filtros</h2>
+
+  <div class="mb-6">
+    <label class="block text-sm font-medium mb-1 text-[#d3d3d3]">Precio mínimo (€)</label>
+    <input type="number" id="minPrice" class="w-full rounded px-3 py-2 text-sm bg-[#2a2b38] text-[#ffeba7] border border-[#5e6681]" placeholder="Ej: 100" min="0" />
+    <label class="block text-sm font-medium mt-4 mb-1 text-[#d3d3d3]">Precio máximo (€)</label>
+    <input type="number" id="maxPrice" class="w-full rounded px-3 py-2 text-sm bg-[#2a2b38] text-[#ffeba7] border border-[#5e6681]" placeholder="Ej: 1500" min="0" />
+  </div>
+
+  <!-- TIENDAS -->
+  <h3 class="text-xl font-semibold mb-3 text-[#ffeba7]">Tiendas</h3>
+  <div class="flex flex-col gap-3 text-sm max-h-[calc(100vh-300px)] overflow-y-auto pr-2 text-[#d3d3d3]">
+    <label class="flex items-center gap-2"><input type="checkbox" value="amazon.es" class="checkbox" /><span>Amazon</span></label>
+    <label class="flex items-center gap-2"><input type="checkbox" value="aliexpress.com" class="checkbox" /><span>AliExpress</span></label>
+    <label class="flex items-center gap-2"><input type="checkbox" value="zalando.es" class="checkbox" /><span>Zalando</span></label>
+    <label class="flex items-center gap-2"><input type="checkbox" value="ebay.es" class="checkbox" /><span>Ebay</span></label>
+    <label class="flex items-center gap-2"><input type="checkbox" value="asos.com" class="checkbox" /><span>Asos</span></label>
+    <label class="flex items-center gap-2"><input type="checkbox" value="ikea.com" class="checkbox" /><span>Ikea</span></label>
+    <label class="flex items-center gap-2"><input type="checkbox" value="elcorteingles.es" class="checkbox" /><span>El Corte Inglés</span></label>
+    <label class="flex items-center gap-2"><input type="checkbox" value="miravia.es" class="checkbox" /><span>Miravia</span></label>
+    <label class="flex items-center gap-2"><input type="checkbox" value="carrefour.es" class="checkbox" /><span>Carrefour</span></label>
+    <label class="flex items-center gap-2"><input type="checkbox" value="mediamarkt.es" class="checkbox" /><span>MediaMarkt</span></label>
+    <label class="flex items-center gap-2"><input type="checkbox" value="nike.com" class="checkbox" /><span>Nike</span></label>
+    <label class="flex items-center gap-2"><input type="checkbox" value="adidas.es" class="checkbox" /><span>Adidas</span></label>
+    <label class="flex items-center gap-2"><input type="checkbox" value="puma.com" class="checkbox" /><span>Puma</span></label>
+    <label class="flex items-center gap-2"><input type="checkbox" value="fnac.es" class="checkbox" /><span>Fnac</span></label>
+    <label class="flex items-center gap-2"><input type="checkbox" value="pccomponentes.com" class="checkbox" /><span>PcComponentes</span></label>
+    <label class="flex items-center gap-2"><input type="checkbox" value="cdiscount.es" class="checkbox" /><span>Cdiscount</span></label>
+    <label class="flex items-center gap-2"><input type="checkbox" value="rakuten.es" class="checkbox" /><span>Rakuten</span></label>
+  </div>
+</aside>
+
+<div id="filtersOverlay" class="fixed inset-0 bg-black/60 z-30 hidden md:hidden"></div>
+
+<script type="module">
+  const toggleBtn = document.getElementById("toggleFilters");
+  const filtersPanel = document.getElementById("filtersPanel");
+  const filtersOverlay = document.getElementById("filtersOverlay");
+
+  toggleBtn?.addEventListener("click", () => {
+    filtersPanel.classList.remove("-translate-x-full");
+    filtersOverlay.classList.remove("hidden");
+  });
+
+  filtersOverlay?.addEventListener("click", () => {
+    filtersPanel.classList.add("-translate-x-full");
+    filtersOverlay.classList.add("hidden");
+  });
+</script>

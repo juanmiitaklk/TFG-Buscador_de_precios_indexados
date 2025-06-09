@@ -1,0 +1,111 @@
+---
+// frontend/src/pages/admin/usuarios.astro
+---
+
+<html>
+  <head>
+    <title>Panel de Usuarios</title>
+    <meta charset="UTF-8" />
+  </head>
+  <html class="bg-gray-100 min-h-screen p-8 font-sans">
+    <div class="max-w-4xl mx-auto bg-white p-6 rounded shadow">
+      <h1 class="text-2xl font-bold mb-4">Panel de Administración de Usuarios</h1>
+
+      <!-- Formulario de nuevo usuario -->
+      <form id="create-user-form" class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <input type="text" name="username" placeholder="Usuario" required class="border px-2 py-1 rounded" />
+        <input type="email" name="email" placeholder="Email" required class="border px-2 py-1 rounded" />
+        <input type="password" name="password" placeholder="Contraseña" required class="border px-2 py-1 rounded" />
+        <button type="submit" class="col-span-1 md:col-span-3 bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+          Crear usuario
+        </button>
+      </form>
+
+      <!-- Tabla de usuarios -->
+      <table class="w-full table-auto border-collapse">
+        <thead>
+          <tr class="bg-gray-200 text-left">
+            <th class="p-2 border">ID</th>
+            <th class="p-2 border">Usuario</th>
+            <th class="p-2 border">Email</th>
+            <th class="p-2 border">Confirmado</th>
+            <th class="p-2 border">Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="users-table" class="text-sm"></tbody>
+      </table>
+    </div>
+
+<script type="module">
+  const API = "http://localhost:5000/auth";
+
+  async function fetchUsers() {
+    const res = await fetch(API + "/users");
+    const users = await res.json();
+    const tbody = document.getElementById("users-table");
+    tbody.innerHTML = "";
+
+    users.forEach(user => {
+      const tr = document.createElement("tr");
+      tr.classList.add("border-b");
+
+      tr.innerHTML =
+        "<td class='p-2 border'>" + user.id + "</td>" +
+        "<td class='p-2 border'><input value='" + user.username + "' data-id='" + user.id + "' class='username-input w-full border rounded px-1' /></td>" +
+        "<td class='p-2 border'>" + user.email + "</td>" +
+        "<td class='p-2 border'>" + (user.confirmed ? "✅" : "❌") + "</td>" +
+        "<td class='p-2 border space-x-2'>" +
+          "<button data-id='" + user.id + "' class='update-btn bg-yellow-400 hover:bg-yellow-500 text-white px-2 py-1 rounded'>Actualizar</button>" +
+          "<button data-id='" + user.id + "' class='delete-btn bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded'>Eliminar</button>" +
+        "</td>";
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  document.getElementById("create-user-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const data = {
+      username: form.username.value,
+      email: form.email.value,
+      password: form.password.value
+    };
+    const res = await fetch(API + "/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+    const result = await res.json();
+    alert(result.message || result.error);
+    fetchUsers();
+    form.reset();
+  });
+
+  document.addEventListener("click", async (e) => {
+    const id = e.target.dataset.id;
+    if (e.target.classList.contains("update-btn")) {
+      const input = document.querySelector("input.username-input[data-id='" + id + "']");
+      const res = await fetch(API + "/users/" + id, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: input.value })
+      });
+      const result = await res.json();
+      alert(result.message || result.error);
+      fetchUsers();
+    }
+
+    if (e.target.classList.contains("delete-btn")) {
+      if (confirm("¿Seguro que deseas eliminar este usuario?")) {
+        const res = await fetch(API + "/users/" + id, { method: "DELETE" });
+        const result = await res.json();
+        alert(result.message || result.error);
+        fetchUsers();
+      }
+    }
+  });
+
+  fetchUsers();
+</script>
+</html>

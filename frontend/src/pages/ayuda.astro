@@ -1,0 +1,251 @@
+
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.png" />
+    <title>Ayuda</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #1f2029;
+        background-image: url("/bg-claro.webp");
+        background-size: cover;
+        background-attachment: fixed;
+        color: #d3d3d3;
+      }
+
+      header {
+        background-color: #2a2b38;
+        padding: 17px;
+        position: relative;
+      }
+
+      .container2 {
+        width: 70%;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #2a2b38;
+        border-radius: 8px;
+        box-shadow: 0 0 10px #000;
+      }
+
+      h1 {
+        text-align: center;
+        color: #ffeba7;
+        font-size: 2.25rem;
+        font-weight: 700;
+      }
+
+      h3 {
+        color: #ffeba7;
+        margin-top: 30px;
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+
+      .qa-card {
+        background: transparent;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 10px;
+      }
+
+      .qa-item {
+        border: 1px solid #5e6681;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        overflow: hidden;
+      }
+
+      .qa-header {
+        background-color: #5e6681;
+        color: #ffeba7;
+        padding: 15px;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: bold;
+        text-align: left;
+        border-radius: 5px;
+      }
+
+      .qa-header:hover {
+        background-color: #3f445a;
+      }
+
+      .qa-answer {
+        padding: 15px;
+        background-color: #1f2029;
+        color: #d3d3d3;
+        display: none;
+        border-top: 1px solid #5e6681;
+      }
+
+      .qa-item.active .qa-answer {
+        display: block;
+      }
+
+      .back-button {
+        position: absolute;
+        left: 10px;
+        top: 20px;
+        background: transparent;
+        border: none;
+        padding: 4px;
+        cursor: pointer;
+        z-index: 10;
+      }
+
+      .back-button svg {
+        width: 44px;
+        height: 44px;
+        stroke: #ffeba7;
+      }
+
+      .back-button:hover {
+        opacity: 0.7;
+      }
+
+      .btn-negro {
+        align-items: center;
+        background-color: transparent;
+        color: black;
+        cursor: pointer;
+        display: flex;
+        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        line-height: 1.5;
+        text-decoration: none;
+        text-transform: uppercase;
+        outline: 0;
+        border: 0;
+        padding: 1rem;
+        margin: 0 auto;
+      }
+
+      .btn-negro::before {
+        background-color: black;
+        content: "";
+        display: inline-block;
+        height: 1px;
+        margin-right: 10px;
+        transition: all 0.42s cubic-bezier(0.25, 0.8, 0.25, 1);
+        width: 0;
+      }
+
+      .btn-negro:hover::before {
+        width: 3rem;
+      }
+
+      footer {
+        padding: 15px 10px;
+        text-align: center;
+        font-size: 24px;
+        color: black;
+        background-color: transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <button
+        type="button"
+        onclick="window.location.href='/'"
+        class="back-button"
+        aria-label="Volver"
+      >
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#ffeba7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
+      </button>
+      <h1>Ayuda</h1>
+    </header>
+
+    <div class="container2">
+      <h1>Preguntas Frecuentes</h1>
+
+      <h3>Funcionamiento</h3>
+      <div class="qa-card">
+        <div class="qa-item">
+          <div class="qa-header">¿Cómo empezar a buscar?</div>
+          <div class="qa-answer">
+            <p>
+              <b>1º Paso</b><br />
+              Regístrate en la página.<br /><br />
+              <b>2º Paso</b><br />
+              Inicia sesión.<br /><br />
+              <b>3º Paso</b><br />
+              Dirígete a la página principal.<br /><br />
+              <b>4º Paso</b><br />
+              Elige un motor de búsqueda.<br /><br />
+              <b>5º Paso</b><br />
+              Selecciona una o varias tiendas.<br /><br />
+              <b>6º Paso</b><br />
+              Escribe el producto a buscar.<br /><br />
+              <b>7º Paso</b><br />
+              Pulsa enter o haz clic en el botón de búsqueda.<br /><br />
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Problemas</h3>
+      <div class="qa-card">
+        <div class="qa-item">
+          <div class="qa-header">¿Por qué no encuentra nada?</div>
+          <div class="qa-answer">
+            <p>
+              Pueden haber varias razones:<br /><br />
+              <ul>
+                <li><b>Falta de especificidad al escribir el artículo</b></li><br />
+                <li><b>No hay resultados para ese producto</b></li><br />
+                <li><b>Has hecho demasiadas búsquedas y Google lanza un CAPTCHA</b></li><br />
+              </ul>
+            </p>
+          </div>
+        </div>
+      </div>
+
+
+      <h3>¿Que puedo hacer para que vaya mejor?</h3>
+      <div class="qa-card">
+        <div class="qa-item">
+          <div class="qa-header">Evitar Captchas</div>
+          <div class="qa-answer">
+            <p>
+              <b>Deshabilitar VPN</b><br />
+              Si estás utilizando una VPN, desactívala temporalmente.<br /><br />
+              <b>Reiniciar router</b><br />
+              Reiniciar tu router puede ayudarte a obtener una nueva dirección IP.<br /><br />
+              <b>Borrar caché y cookies</b><br />
+              Borrar la caché y las cookies de tu navegador.<br /><br />
+              <b>Desactivar extensiones</b><br />
+              Si utilizas extensiones o complementos del navegador, intenta desactivarlos temporalmente.<br /><br />
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    
+
+    <footer>
+      <p>¿Aún tienes más dudas?</p>
+      <button class="btn-negro" onclick="window.open('https://t.me/botwareshop', '_blank')">
+        HABLAME
+      </button>
+    </footer>
+
+    <script>
+      document.querySelectorAll('.qa-header').forEach(header => {
+        header.addEventListener('click', () => {
+          header.parentElement.classList.toggle('active');
+        });
+      });
+    </script>
+  </body>
+</html>

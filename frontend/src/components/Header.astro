@@ -1,0 +1,82 @@
+---
+
+---
+
+<header class="bg-[#2a2b38] p-4 shadow-lg">
+  <div class="max-w-7xl mx-auto flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    
+    <!-- Título -->
+    <div class="flex items-center justify-between">
+      <h1 class="text-2xl sm:text-3xl font-bold text-[#ffeba7]">🔍 Buscador de Precios</h1>
+      
+      <!-- Botón de filtros solo en móvil -->
+      <button
+        id="toggleFilters"
+        class="md:hidden bg-[#5e6681] text-white px-3 py-1 rounded font-semibold hover:bg-[#ffeba7] hover:text-[#2a2b38]"
+      >
+        Filtros
+      </button>
+    </div>
+
+    <!-- Formulario + ayuda -->
+    <form
+      id="search-form"
+      onsubmit="return false;"
+      class="flex flex-col sm:flex-row gap-2 w-full md:max-w-xl items-center"
+    >
+      <input
+        type="text"
+        id="query"
+        placeholder="Ej: ASUS VivoBook 15"
+        required
+        class="flex-grow px-4 py-2 rounded text-sm bg-[#1f2029] text-[#d3d3d3] border border-[#5e6681] placeholder-[#5e6681] focus:outline-none focus:ring-2 focus:ring-[#ffeba7]"
+      />
+      <button
+        type="submit"
+        class="bg-[#5e6681] text-white px-4 py-2 rounded font-semibold hover:bg-[#ffeba7] hover:text-[#2a2b38]"
+      >
+        Buscar
+      </button>
+      <!-- Botón de ayuda -->
+      <a href="/ayuda" title="Ayuda" class="ml-0 sm:ml-2 flex items-center">
+        <img
+          src="/ayuda-icono.webp"
+          alt="Ayuda"
+          class="w-9 h-9"
+          style="filter: brightness(0) saturate(100%) invert(84%) sepia(11%) saturate(563%) hue-rotate(341deg) brightness(103%) contrast(94%);"
+        />
+      </a>
+    </form>
+
+    <!-- Usuario + logout -->
+    <div class="flex flex-col sm:flex-row items-center gap-2">
+      <span id="user-info" class="text-[#d3d3d3] font-semibold text-base">Hola</span>
+      <button
+        onclick="logout()"
+        class="bg-[#5e6681] text-white px-4 py-2 rounded font-semibold hover:bg-[#ffeba7] hover:text-[#2a2b38] w-full sm:w-auto"
+      >
+        Cerrar sesión
+      </button>
+    </div>
+  </div>
+
+  <!-- Script para manejar sesión -->
+  <script type="module">
+    const userJSON = localStorage.getItem("user");
+
+    if (userJSON) {
+      const user = JSON.parse(userJSON);
+      const info = document.getElementById("user-info");
+      if (info) {
+        info.textContent = `Hola, ${user.nombre}`;
+      }
+    } else {
+      window.location.href = "/login";
+    }
+
+    window.logout = function () {
+      localStorage.removeItem("user");
+      window.location.href = "/login";
+    };
+  </script>
+</header>
