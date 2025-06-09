@@ -62,6 +62,10 @@ Interfaz moderna y usable	✔
 Persistencia de productos	✘
 Autenticación avanzada (JWT)	✘
 
+
+## Presentación
+https://view.genially.com/6845e6479ac5b8c8009942c1/presentation-tfg-juan-manuel-gonzalez-diaz
+
 ## 📄 Licencia
 
 Este proyecto está licenciado bajo los términos de la **MIT License**.  
